@@ -6,7 +6,6 @@
 #include "lcd.h"
 #include "lcd.pio.h"
 #include "font.h"
-#include "colors.h"
 #include "term.h"
 
 volatile bool rotate = LCD_ROTATE;
