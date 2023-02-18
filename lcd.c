@@ -10,6 +10,7 @@
 #include "font.h"
 #include "term.h"
 
+int32_t colors[] = {COLORS};
 volatile bool rotate = LCD_ROTATE;
 volatile int dirty;
 int brightness = BRIGHTNESS_DEFAULT;
