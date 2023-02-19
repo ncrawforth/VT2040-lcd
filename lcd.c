@@ -22,10 +22,6 @@ void lcd_pio_init() {
   pio_sm_config c = lcd_program_get_default_config(offset);
   sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
   sm_config_set_out_shift(&c, false, true, 8);
-  pio_sm_init(LCD_PIO, LCD_PIO_SM, offset, &c);
-  pio_sm_set_enabled(LCD_PIO, LCD_PIO_SM, true);
-  // Set the clock divisor
-  sm_config_set_clkdiv(&c, LCD_PIO_CLKDIV_CMD);
   // Initialise the MOSI pin
   pio_gpio_init(LCD_PIO, LCD_PIN_MOSI);
   pio_sm_set_consecutive_pindirs(LCD_PIO, LCD_PIO_SM, LCD_PIN_MOSI, 1, true);
@@ -34,6 +30,9 @@ void lcd_pio_init() {
   pio_gpio_init(LCD_PIO, LCD_PIN_CLK);
   pio_sm_set_consecutive_pindirs(LCD_PIO, LCD_PIO_SM, LCD_PIN_CLK, 1, true);
   sm_config_set_sideset_pins(&c, LCD_PIN_CLK);
+  // Start the PIO program
+  pio_sm_init(LCD_PIO, LCD_PIO_SM, offset, &c);
+  pio_sm_set_enabled(LCD_PIO, LCD_PIO_SM, true);
 }
 
 void lcd_pio_set_dc(bool dc) {
@@ -75,6 +74,7 @@ void core1_main() {
   
   // Initialise the LCD
   lcd_pio_set_dc(0);
+  pio_sm_set_clkdiv(LCD_PIO, LCD_PIO_SM, LCD_PIO_CLKDIV_CMD);
   lcd_pio_put(0x11); // Cmd: Sleep Out
   lcd_pio_set_dc(0);
   lcd_pio_put(0x29); // Cmd: Display ON
