@@ -30,20 +30,20 @@
 // Colour palette
 #define COLORS \
   0x000000, /* Black */ \
-  0xef0000, /* Red */ \
-  0x00ef00, /* Green */ \
-  0xefef00, /* Yellow */ \
-  0x0000ef, /* Blue */ \
-  0xef00ef, /* Magenta */ \
-  0x00efef, /* Cyan */ \
-  0xefefef, /* White */ \
-  0x7f7f7f, /* Bright black */ \
-  0xff7f7f, /* Bright red */ \
-  0x7fff7f, /* Bright green */ \
-  0xffff7f, /* Bright yellow */ \
-  0x7f7fff, /* Bright blue */ \
-  0xff7fff, /* Bright magenta */ \
-  0x7fffff, /* Bright cyan */ \
+  0xf70000, /* Red */ \
+  0x00f700, /* Green */ \
+  0xf7f700, /* Yellow */ \
+  0x0000f7, /* Blue */ \
+  0xf700f7, /* Magenta */ \
+  0x00f7f7, /* Cyan */ \
+  0xf7f7f7, /* White */ \
+  0xbfbfbf, /* Bright black */ \
+  0xffbfbf, /* Bright red */ \
+  0xbfffbf, /* Bright green */ \
+  0xffffbf, /* Bright yellow */ \
+  0xbfbfff, /* Bright blue */ \
+  0xffbfff, /* Bright magenta */ \
+  0xbfffff, /* Bright cyan */ \
   0xffffff, /* Bright white */
 
 void lcd_init();
