@@ -11,6 +11,7 @@
 #include "term.h"
 
 int32_t colors[] = {COLORS};
+int32_t aacolors[128];
 volatile bool rotate = LCD_ROTATE;
 volatile int dirty;
 int brightness = BRIGHTNESS_DEFAULT;
@@ -137,17 +138,16 @@ void core1_main() {
       lcd_pio_set_dc(1);
       pio_sm_set_clkdiv(LCD_PIO, LCD_PIO_SM, LCD_PIO_CLKDIV_PIXELS);
       for (unsigned int x = 0; x < TERM_WIDTH; x++) {
-        int32_t fgcolor = colors[term_attr_fgcolor(term_attrs[pos])];
-        int32_t bgcolor = colors[term_attr_bgcolor(term_attrs[pos])];
+        int attr = term_attrs[pos];
+        int32_t fgcolor = term_attr_fgcolor(attr);
+        int32_t bgcolor = term_attr_bgcolor(attr);
+        int32_t aacolor = aacolors[(bgcolor << 4) + fgcolor];
+        fgcolor = colors[fgcolor];
+        bgcolor = colors[bgcolor];
         if (term_cursor_visible && x == term_cursor_x && y == term_cursor_y) {
           fgcolor = colors[0];
-          bgcolor = colors[15];
-        }
-        int32_t aacolor = bgcolor;
-        if (bgcolor == 0) {
-          aacolor = (fgcolor & 0xfefefe) >> 1;
-        } else {
-          aacolor = ((fgcolor & 0xf8f8f8) >> 3) + ((bgcolor & 0xf8f8f8) >> 3) + ((bgcolor & 0xfcfcfc) >> 2) + ((bgcolor & 0xfefefe) >> 1);
+          bgcolor = colors[7];
+          aacolor = aacolors[112];
         }
         int32_t underline = term_attr_underline(term_attrs[pos]) ? 0b1100 : 0;
         int32_t *c = &font[term_chars[pos] * 6];
@@ -176,7 +176,31 @@ void core1_main() {
   }
 }
 
+void calc_aacolors() {
+  for (int i = 0; i < 8; i++) {
+    int32_t bgcolor = colors[i];
+    int bgr = (bgcolor >> 16) & 0xff;
+    int bgg = (bgcolor >> 8) & 0xff;
+    int bgb = bgcolor & 0xff;
+    for (int j = 0; j < 16; j++) {
+      int32_t fgcolor = colors[j];
+      int fgr = (fgcolor >> 16) & 0xff;
+      int fgg = (fgcolor >> 8) & 0xff;
+      int fgb = fgcolor & 0xff;
+      // Calculate an intermediate colour that looks ok
+      // There's a better way to do this using gamma correction
+      int aar = fgr > bgr ? (fgr + bgr) / 2 : (fgr + bgr * 7) / 8;
+      int aag = fgg > bgg ? (fgg + bgg) / 2 : (fgg + bgg * 7) / 8;
+      int aab = fgb > bgb ? (fgb + bgb) / 2 : (fgb + bgb * 7) / 8;
+      aacolors[i * 16 + j] = (aar << 16) + (aag << 8) + aab;
+    }
+  }
+}
+  
 void lcd_init() {
+  // Calculate antialiasing colours
+  calc_aacolors();
+  // Start the LCD driver on CPU core 1
   multicore_launch_core1(core1_main);
 }
 
@@ -206,6 +230,7 @@ void lcd_invert() {
     colors[i] = colors[i + 8];
     colors[i + 8] = tmp;
   }
+  calc_aacolors();
   lcd_invalidate();
 }
 
