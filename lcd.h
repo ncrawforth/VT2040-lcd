@@ -27,23 +27,27 @@
 // 1.5 is outside spec but works
 #define LCD_PIO_CLKDIV_PIXELS 1.5f
 
+// ILI9488 gamma control
+// See datasheet PGAMCTRL/NGAMCTRL for details
+#define LCD_GAMMA 0, 9, 15, 5, 12, 7, 67, 170, 89, 12, 25, 13, 57, 60, 15
+
 // Colour palette
-#define COLORS \
+#define LCD_COLORS \
   0x000000, /* Black */ \
-  0xf70000, /* Red */ \
-  0x00f700, /* Green */ \
-  0xf7f700, /* Yellow */ \
-  0x0000f7, /* Blue */ \
-  0xf700f7, /* Magenta */ \
-  0x00f7f7, /* Cyan */ \
-  0xf7f7f7, /* White */ \
-  0xbfbfbf, /* Bright black */ \
-  0xffbfbf, /* Bright red */ \
-  0xbfffbf, /* Bright green */ \
-  0xffffbf, /* Bright yellow */ \
-  0xbfbfff, /* Bright blue */ \
-  0xffbfff, /* Bright magenta */ \
-  0xbfffff, /* Bright cyan */ \
+  0xbf0000, /* Red */ \
+  0x00bf00, /* Green */ \
+  0xbfbf00, /* Yellow */ \
+  0x0000bf, /* Blue */ \
+  0xbf00bf, /* Magenta */ \
+  0x00bfbf, /* Cyan */ \
+  0xbfbfbf, /* White */ \
+  0x3f3f3f, /* Bright black */ \
+  0xff3f3f, /* Bright red */ \
+  0x3fff3f, /* Bright green */ \
+  0xffff3f, /* Bright yellow */ \
+  0x3f3fff, /* Bright blue */ \
+  0xff3fff, /* Bright magenta */ \
+  0x3fffff, /* Bright cyan */ \
   0xffffff, /* Bright white */
 
 void lcd_init();
